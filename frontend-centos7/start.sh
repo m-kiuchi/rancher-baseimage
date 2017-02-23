@@ -1,5 +1,8 @@
 #!/bin/bash
 ADDUSER=$1
+if [ "${SSHUSER}" != "" ]; then
+  ADDUSER=${SSHUSER}
+fi
 if [ "${ADDUSER}" == "" ]; then
   ADDUSER=root
 fi
