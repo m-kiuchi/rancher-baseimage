@@ -6,7 +6,7 @@ fi
 if [ "${ADDUSER}" == "" ]; then
   ADDUSER=root
 fi
-echo $ADDUSER
+#echo $ADDUSER
 
 __create_user() {
 # Create a user to SSH into as.
