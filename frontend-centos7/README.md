@@ -1,14 +1,14 @@
-# dockerfiles mkiuchi/frontend-centos7
+# dockerfiles m-kiuchi/frontend-centos7
 
 # Building & Running(jp)
 
 コンテナは以下の方法でビルドします
 
-	# docker build --rm -t mkiuchi/frontend-centos7 .
+	# docker build --rm -t m-kiuchi/frontend-centos7 .
 
 以下のように実行します
 
-	# docker run -d -p 22 mkiuchi/frontend-centos7
+	# docker run -d -p 22 m-kiuchi/frontend-centos7
 
 実行後sshでログインするためのデフォルトユーザは `root` になります。パスワードは実行のたびに新たに生成されます。 `docker logs` コマンドで確認してください。
 
@@ -24,7 +24,7 @@
 
 rootユーザでログインしたくない場合、以下のように実行します。
 
-	# docker run -d -p 22 mkiuchi/frontend-centos7 <ユーザ名>
+	# docker run -d -p 22 m-kiuchi/frontend-centos7 <ユーザ名>
 
 root以外のユーザでsshログインした場合は、ログイン後 `sudo` コマンドで管理者コマンドを実行することができます
 
@@ -33,7 +33,7 @@ root以外のユーザでsshログインした場合は、ログイン後 `sudo`
 ```
 # docker ps
 CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS              PORTS                   NAMES
-8c82a9287b23        mkiuchi/frontend-centos7   /start.sh   4 seconds ago       Up 2 seconds        0.0.0.0:49154->22/tcp   mad_mccarthy        
+8c82a9287b23        m-kiuchi/frontend-centos7   /start.sh   4 seconds ago       Up 2 seconds        0.0.0.0:49154->22/tcp   mad_mccarthy        
 ```
 
 sshでコンテナにログインするには以下のコマンドを実行します
@@ -45,17 +45,17 @@ sshでコンテナにログインするには以下のコマンドを実行し�
 
 Copy the sources to your docker host and build the container:
 
-	# docker build --rm -t mkiuchi/frontend-centos7 .
+	# docker build --rm -t m-kiuchi/frontend-centos7 .
 
 To run:
 
-	# docker run -d -p 22 mkiuchi/frontend-centos7
+	# docker run -d -p 22 m-kiuchi/frontend-centos7
 
 Default user name is `root` and default password is changed for each `docker run` . Please check `docker logs` .
 
 If you want to log in to container as specified username instead of default user `root`, please run following:
 
-	# docker run -d -p 22 mkiuchi/frontend-centos7 <your user name>
+	# docker run -d -p 22 m-kiuchi/frontend-centos7 <your user name>
 
 After log in, you can promote to root as `sudo`.
 
@@ -64,7 +64,7 @@ Get the port that the container is listening on:
 ```
 # docker ps
 CONTAINER ID        IMAGE                 COMMAND             CREATED             STATUS              PORTS                   NAMES
-8c82a9287b23        mkiuchi/frontend-centos7   /start.sh   4 seconds ago       Up 2 seconds        0.0.0.0:49154->22/tcp   mad_mccarthy        
+8c82a9287b23        m-kiuchi/frontend-centos7   /start.sh   4 seconds ago       Up 2 seconds        0.0.0.0:49154->22/tcp   mad_mccarthy        
 ```
 
 To test, use the port that was just located:
