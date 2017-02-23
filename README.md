@@ -1,0 +1,3 @@
+# Rancher baseimage
+
+Rancherカタログで動作するDockerコンテナを作成するためのイメージリポジトリです
