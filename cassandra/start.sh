@@ -5,7 +5,7 @@ echo $CAS_TYPE > /tmp/CAS_TYPE
 
 echo "ADD cassandra user account"
 ./adduser.sh
-ASSUSER=$(cat /tmp/ADDUSER)
+ADDUSER=$(cat /tmp/ADDUSER)
 SSH_USERPASS=$(cat /tmp/SSH_USERPASS)
 rm -f /tmp/SSH_USERPASS
 

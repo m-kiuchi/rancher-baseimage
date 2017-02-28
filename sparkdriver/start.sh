@@ -1,27 +1,31 @@
 #!/bin/bash
-ADDUSER=$1
-if [ "${SSHUSER}" != "" ]; then
-  ADDUSER=${SSHUSER}
-fi
-if [ "${ADDUSER}" == "" ]; then
-  ADDUSER=root
-fi
-#echo $ADDUSER
+###############################################################################
+METADATA_HOST=rancher-metadata.rancher.internal
+METADATA_VERSION=latest
+METADATA=$METADATA_HOST/$METADATA_VERSION
+function metadata { echo $(curl -s $METADATA/$1); }
+###############################################################################
+echo $ZK_SERVICE > /tmp/ZK_SERVICE
+echo $MESOS_SERVICE > /tmp/MESOS_SERVICE
 
-__create_user() {
-# Create a user to SSH into as.
-if [ "$ADDUSER" != "root" ]; then
-  useradd $ADDUSER
-  usermod -aG wheel $ADDUSER
-fi
-SSH_USERPASS=`date|sha1sum|awk '{print $1}'`
-echo -e "$SSH_USERPASS\n$SSH_USERPASS" | (passwd --stdin $ADDUSER)
+echo "ADD spark user account"
+./adduser.sh
+ADDUSER=$(cat /tmp/ADDUSER)
+SSH_USERPASS=$(cat /tmp/SSH_USERPASS)
+rm -f /tmp/SSH_USERPASS
+
+echo "create spark environment"
+cp /etc/hosts /etc/hosts.tmp
+sed -i "s/.*$(hostname)/$(metadata self/container/primary_ip)\t$(hostname)/g" /etc/hosts.tmp
+cp /etc/hosts.tmp /etc/hosts
+
+su -c "tar xzf /spark-2.0.2-bin-hadoop2.7.tgz" $(cat /tmp/ADDUSER) > /tmp/spark.log 2>&1
+su -c "ln -s spark-2.0.2-bin-hadoop2.7 spark" $(cat /tmp/ADDUSER) > /tmp/spark.log 2>&1
+su -c "/mesosconfig.sh"
+
+echo "start sshd"
 echo "--------------------"
 echo " SSH PASSWORD - please change immediately"
 echo " username: ${ADDUSER} , password: ${SSH_USERPASS}"
 echo "--------------------"
-}
-
-# Call all functions
-__create_user
 /usr/sbin/sshd -D
