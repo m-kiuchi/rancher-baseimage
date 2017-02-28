@@ -19,9 +19,7 @@ cp /etc/hosts /etc/hosts.tmp
 sed -i "s/.*$(hostname)/$(metadata self/container/primary_ip)\t$(hostname)/g" /etc/hosts.tmp
 cp /etc/hosts.tmp /etc/hosts
 
-su -c "tar xzf /spark-2.0.2-bin-hadoop2.7.tgz" $(cat /tmp/ADDUSER) > /tmp/spark.log 2>&1
-su -c "ln -s spark-2.0.2-bin-hadoop2.7 spark" $(cat /tmp/ADDUSER) > /tmp/spark.log 2>&1
-su -c "/mesosconfig.sh"
+su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 
 echo "start sshd"
 echo "--------------------"

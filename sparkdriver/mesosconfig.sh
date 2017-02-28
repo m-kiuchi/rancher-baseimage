@@ -6,15 +6,6 @@ METADATA=$METADATA_HOST/$METADATA_VERSION
 function metadata { echo $(curl -s $METADATA/$1); }
 ###############################################################################
 
-## network hack
-#cp /etc/hosts /etc/hosts.tmp
-##umount /etc/hosts
-#sed -i "s/.*$(hostname)/$(metadata self/container/primary_ip)\t$(hostname)/g" /etc/hosts.tmp
-#cp /etc/hosts.tmp /etc/hosts
-
-#PRINCIPAL=${PRINCIPAL:-root}
-#ZK_SERVICE=${ZK_SERVICE:-"mesos/zk"}
-#MESOS_SERVICE=${MESOS_SERVICE:-"mesos/mesos"}
 if [ -e /tmp/PRINCIPAL ]; then
    PRINCIPAL=$(cat /tmp/PRINCIPAL)
 fi
@@ -74,12 +65,15 @@ function mesos_stack {
 mesos_stack
 zk=$(zk_string)
 export MARATHON_MASTER=$zk/$(mesos_stack)
-export MESOS_MASTER=mesos://$zk/$(mesos_stack)
+export MESOS_MASTER=mesos://$zk/mesos
 if [ "${MESOS_MASTER}" = "" ]; then
   echo "$0: No Mesos Config found. Exitting."
   exit 1
 else
   echo "export MESOS_MASTER=${MESOS_MASTER}" >> ~/.bashrc
+  echo "spark.master                      ${MESOS_MASTER}" >> /opt/spark/conf/spark-defaults.conf
+  echo "spark.mesos.executor.docker.image mkiuchicl/sparkdriver" >> /opt/spark/conf/spark-defaults.conf
+  echo "spark.mesos.executor.home         /opt/spark" >> /opt/spark/conf/spark-defaults.conf
 fi
 export MARATHON_ZK=$zk/$(metadata self/stack/name)
 export MARATHON_HOSTNAME=$(metadata self/host/agent_ip)

@@ -8,7 +8,7 @@
 #
 # Based on:
 #   - Mesos 0.28.1(from: http://repos.mesosphere.com/el-testing/7)
-#   - Spark 2.1.0
+#   - Spark 2.0.2
 
 FROM centos:centos7
 MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
@@ -20,18 +20,10 @@ RUN yum -y install openssh-server passwd sudo iproute
 RUN rpm -Uvh http://repos.mesosphere.com/el-testing/7/noarch/RPMS/mesosphere-el-repo-7-3.noarch.rpm
 RUN yum -y install mesos-0.28.1 mesosphere-zookeeper
 RUN yum clean all
-RUN systemctl disable mesos-master
-RUN systemctl disable mesos-slave
-RUN systemctl disable zookeeper
-RUN systemctl disable sshd
-RUN systemctl disable default.target
-RUN systemctl disable multi-user.target
-RUN systemctl disable remote-fs.target
-RUN systemctl disable runlevel2.target
-RUN systemctl disable runlevel3.target
-RUN systemctl disable runlevel4.target
+RUN systemctl disable mesos-master mesos-slave zookeeper sshd
+RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target
 
-RUN curl -O http://ftp.riken.jp/net/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz
+RUN cd opt; curl -O http://ftp.riken.jp/net/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz; tar xzf spark-2.0.2-bin-hadoop2.7.tgz; ln -s spark-2.0.2-bin-hadoop2.7 spark; rm -f spark-2.0.2-bin-hadoop2.7.tgz
 
 ADD ./start.sh /start.sh
 ADD ./adduser.sh /adduser.sh
