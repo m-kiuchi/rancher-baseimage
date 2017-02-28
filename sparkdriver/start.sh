@@ -21,6 +21,11 @@ cp /etc/hosts.tmp /etc/hosts
 
 su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 
+MESOS_MASTER=$(cat /tmp/MESOS_MASTER)
+echo "spark.master                      ${MESOS_MASTER}" >> /opt/spark/conf/spark-defaults.conf
+echo "spark.mesos.executor.docker.image mkiuchicl/sparkdriver" >> /opt/spark/conf/spark-defaults.conf
+echo "spark.mesos.executor.home         /opt/spark" >> /opt/spark/conf/spark-defaults.conf
+
 echo "start sshd"
 echo "--------------------"
 echo " SSH PASSWORD - please change immediately"

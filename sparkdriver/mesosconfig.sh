@@ -71,9 +71,7 @@ if [ "${MESOS_MASTER}" = "" ]; then
   exit 1
 else
   echo "export MESOS_MASTER=${MESOS_MASTER}" >> ~/.bashrc
-  echo "spark.master                      ${MESOS_MASTER}" >> /opt/spark/conf/spark-defaults.conf
-  echo "spark.mesos.executor.docker.image mkiuchicl/sparkdriver" >> /opt/spark/conf/spark-defaults.conf
-  echo "spark.mesos.executor.home         /opt/spark" >> /opt/spark/conf/spark-defaults.conf
+  echo "${MESOS_MASTER}" > /tmp/MESOS_MASTER
 fi
 export MARATHON_ZK=$zk/$(metadata self/stack/name)
 export MARATHON_HOSTNAME=$(metadata self/host/agent_ip)
