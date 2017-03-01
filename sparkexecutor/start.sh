@@ -24,10 +24,19 @@ cp /etc/hosts.tmp /etc/hosts
 su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 
 MESOS_MASTER=$(cat /tmp/MESOS_MASTER)
+CURRENT_IP=$(hostname -i)
+export SPARK_LOCAL_IP=${SPARK_LOCAL_IP:-${CURRENT_IP:-"127.0.0.1"}}
 echo "spark.master                      ${MESOS_MASTER}" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.mesos.executor.docker.image mkiuchicl/sparkexecutor" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.mesos.executor.home         /opt/spark" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.mesos.mesosExecutor.cores   ${MESOS_EXECUTOR_CORE}" >> /opt/spark/conf/spark-defaults.conf
+
+cat > /opt/spark/conf/spark-env.sh <<EOT
+#!/usr/bin/env bash
+export MESOS_NATIVE_JAVA_LIBRARY=${MESOS_NATIVE_JAVA_LIBRARY:-/usr/lib/libmesos.so}
+export SPARK_LOCAL_IP=${SPARK_LOCAL_IP:-"127.0.0.1"}
+#export SPARK_PUBLIC_DNS=${SPARK_PUBLIC_DNS:-"127.0.0.1"}
+EOT
 
 echo "start sshd"
 echo "--------------------"
