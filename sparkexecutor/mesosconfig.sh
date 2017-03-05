@@ -65,12 +65,14 @@ function mesos_stack {
 mesos_stack
 zk=$(zk_string)
 export MARATHON_MASTER=$zk/$(mesos_stack)
-export MESOS_MASTER=mesos://$zk/mesos
+#export MESOS_MASTER=mesos://$zk/mesos
+export MESOS_MASTER=mesos://${MESOS_MASTER_IP}:${MESOS_MASTER_PORT}
 if [ "${MESOS_MASTER}" = "" ]; then
   echo "$0: No Mesos Config found. Exitting."
   exit 1
 else
   echo "export MESOS_MASTER=${MESOS_MASTER}" >> ~/.bashrc
+  echo "export MARATHON_MASTER=${MARATHON_MASTER}" >> ~/.bashrc
   echo "${MESOS_MASTER}" > /tmp/MESOS_MASTER
 fi
 export MARATHON_ZK=$zk/$(metadata self/stack/name)

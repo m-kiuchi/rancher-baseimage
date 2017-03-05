@@ -15,6 +15,7 @@ __create_user() {
 if [ "$ADDUSER" != "root" ]; then
   useradd $ADDUSER
   usermod -aG wheel $ADDUSER
+  echo "${ADDUSER} ALL=NOPASSWD: ALL" > /etc/sudoers.d/${ADDUSER}
 fi
 export SSH_USERPASS=`date|sha1sum|awk '{print $1}'`
 echo ${SSH_USERPASS} > /tmp/SSH_USERPASS

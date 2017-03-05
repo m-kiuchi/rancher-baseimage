@@ -7,7 +7,8 @@ function metadata { echo $(curl -s $METADATA/$1); }
 ###############################################################################
 echo $ZK_SERVICE > /tmp/ZK_SERVICE
 echo $MESOS_SERVICE > /tmp/MESOS_SERVICE
-
+MESOS_EXECUTOR_CORE=${MESOS_EXECUTOR_CORE:-0.1}
+CURRENT_IP=$(hostname -i)
 
 echo "ADD spark user account"
 ./adduser.sh
@@ -24,19 +25,25 @@ su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 
 CURRENT_IP=$(hostname -i)
 MESOS_MASTER=$(cat /tmp/MESOS_MASTER)
-CURRENT_IP=$(hostname -i)
 export SPARK_LOCAL_IP=${SPARK_LOCAL_IP:-${CURRENT_IP:-"127.0.0.1"}}
 echo "spark.master                      ${MESOS_MASTER}" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.mesos.executor.docker.image mkiuchicl/sparkexecutor" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.mesos.executor.home         /opt/spark" >> /opt/spark/conf/spark-defaults.conf
+echo "spark.mesos.mesosExecutor.cores   ${MESOS_EXECUTOR_CORE}" >> /opt/spark/conf/spark-defaults.conf
 echo "spark.driver.host                 ${CURRENT_IP}" >> /opt/spark/conf/spark-defaults.conf
 
 cat > /opt/spark/conf/spark-env.sh <<EOT
 #!/usr/bin/env bash
 export MESOS_NATIVE_JAVA_LIBRARY=${MESOS_NATIVE_JAVA_LIBRARY:-/usr/lib/libmesos.so}
 export SPARK_LOCAL_IP=${SPARK_LOCAL_IP:-"127.0.0.1"}
-#export SPARK_PUBLIC_DNS=${SPARK_PUBLIC_DNS:-"127.0.0.1"}
 EOT
+
+cat > /etc/profile.d/spark.sh <<EOT
+# Apache Spark
+export SPARK_HOME=/opt/spark
+EOT
+
+cat /opt/spark/conf/log4j.properties.template |sed -e 's/log4j.rootCategory=INFO/log4j.rootCategory=WARN/' > /opt/spark/conf/log4j.properties
 
 echo "start sshd"
 echo "--------------------"
