@@ -47,12 +47,12 @@ function zk_string {
   for container in $(zk_service containers); do
     ip=$(zk_container_primary_ip $container)
     if [ "$ZK_STRING" == "" ]; then
-      ZK_STRING=zk://$ip:2181
+      ZK_STRING=$ip:2181
     else
       ZK_STRING=$ZK_STRING,$ip:2181
     fi
   done
-  echo ${ZK_STRING}
+  echo ${ZK_STRING} > /tmp/ZK_STRING
 }
 
 function mesos_stack {

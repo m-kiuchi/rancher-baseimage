@@ -26,9 +26,9 @@ su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 CURRENT_IP=$(hostname -i)
 MESOS_MASTER=$(cat /tmp/MESOS_MASTER)
 
-
-
-
+echo "start kafka"
+./kafkaprepare.sh
+/opt/kafka/bin/kafka-server-start.sh -daemon /opt/kafka/config/server.properties
 
 echo "start sshd"
 echo "--------------------"

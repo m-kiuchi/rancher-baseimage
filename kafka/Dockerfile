@@ -20,10 +20,13 @@ RUN yum clean all
 RUN systemctl disable mesos-master mesos-slave zookeeper sshd
 RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target
 
+RUN cd /opt; curl -O http://ftp.riken.jp/net/apache/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz; tar xzf kafka_2.12-0.10.2.0.tgz; ln -s kafka_2.12-0.10.2.0 kafka; rm -f kafka_2.12-0.10.2.0.tgz
+
 ADD ./start.sh /start.sh
 ADD ./adduser.sh /adduser.sh
 ADD ./mesosconfig.sh /mesosconfig.sh
-RUN chmod 755 /start.sh /adduser.sh /mesosconfig.sh
+ADD ./kafkaprepare.sh /kafkaprepare.sh
+RUN chmod 755 /start.sh /adduser.sh /mesosconfig.sh /kafkaprepare.sh
 
 RUN mkdir /var/run/sshd
 RUN ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ''
