@@ -13,11 +13,12 @@ MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
 ARG adduser=kafka
 
 RUN yum -y update; yum clean all
-RUN yum -y install openssh-server passwd sudo iproute
-RUN rpm -Uvh http://repos.mesosphere.com/el-testing/7/noarch/RPMS/mesosphere-el-repo-7-3.noarch.rpm
-RUN yum -y install mesos-0.28.1 mesosphere-zookeeper
+RUN yum -y install openssh-server passwd sudo iproute java-1.8.0-openjdk
+#RUN rpm -Uvh http://repos.mesosphere.com/el-testing/7/noarch/RPMS/mesosphere-el-repo-7-3.noarch.rpm
+#RUN yum -y install mesos-0.28.1 mesosphere-zookeeper
 RUN yum clean all
-RUN systemctl disable mesos-master mesos-slave zookeeper sshd
+#RUN systemctl disable mesos-master mesos-slave zookeeper
+RUN systemctl disable sshd
 RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target
 
 RUN cd /opt; curl -O http://ftp.riken.jp/net/apache/kafka/0.10.2.0/kafka_2.12-0.10.2.0.tgz; tar xzf kafka_2.12-0.10.2.0.tgz; ln -s kafka_2.12-0.10.2.0 kafka; rm -f kafka_2.12-0.10.2.0.tgz
