@@ -1,2 +1,2 @@
-# dockerfiles m-kiuchi/sparkdriver
+# dockerfiles m-kiuchi/sparkexecutor
 

@@ -26,7 +26,10 @@ su -c "/mesosconfig.sh" $(cat /tmp/ADDUSER) >> /tmp/spark.log 2>&1
 MESOS_MASTER=$(cat /tmp/MESOS_MASTER)
 
 echo "create akka config"
-su -c "/akkaprepare.sh" $(cat /tmp/ADDUSER) >> /tmp/akka.log 2>&1
+cat > /etc/profile.d/akka.sh <<EOT
+# Akka framework
+export PATH="${PATH}:/opt/activator/bin"
+EOT
 
 echo "start sshd"
 echo "--------------------"

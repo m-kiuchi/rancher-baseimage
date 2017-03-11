@@ -18,7 +18,7 @@ RUN yum clean all
 RUN systemctl disable sshd
 RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target
 
-RUN cd /opt; curl -O https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12.zip; unzip typesafe-activator-1.3.12.zip; ln -s activator-dist-1.3.12 activator; chmod 755 activator/bin/*
+RUN cd /opt; curl -O https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12.zip; unzip typesafe-activator-1.3.12.zip; ln -s activator-dist-1.3.12 activator; chmod 755 activator/bin/*; rm -f typesafe-activator-1.3.12.zip
 
 ADD ./start.sh /start.sh
 ADD ./adduser.sh /adduser.sh

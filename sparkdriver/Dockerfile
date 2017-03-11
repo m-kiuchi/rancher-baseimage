@@ -16,14 +16,15 @@ MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
 ARG adduser=spark
 
 RUN yum -y update; yum clean all
-RUN yum -y install openssh-server passwd sudo iproute
+RUN yum -y install openssh-server passwd sudo iproute unzip
 RUN rpm -Uvh http://repos.mesosphere.com/el-testing/7/noarch/RPMS/mesosphere-el-repo-7-3.noarch.rpm
 RUN yum -y install mesos-0.28.1 mesosphere-zookeeper
 RUN yum clean all
 RUN systemctl disable mesos-master mesos-slave zookeeper sshd
 RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target
 
-RUN cd opt; curl -O http://ftp.riken.jp/net/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz; tar xzf spark-2.0.2-bin-hadoop2.7.tgz; ln -s spark-2.0.2-bin-hadoop2.7 spark; rm -f spark-2.0.2-bin-hadoop2.7.tgz
+RUN cd /opt; curl -O http://ftp.riken.jp/net/apache/spark/spark-2.0.2/spark-2.0.2-bin-hadoop2.7.tgz; tar xzf spark-2.0.2-bin-hadoop2.7.tgz; ln -s spark-2.0.2-bin-hadoop2.7 spark; rm -f spark-2.0.2-bin-hadoop2.7.tgz
+RUN cd /opt; curl -O https://downloads.typesafe.com/typesafe-activator/1.3.12/typesafe-activator-1.3.12.zip; unzip typesafe-activator-1.3.12.zip; ln -s activator-dist-1.3.12 activator; chmod 755 activator/bin/*; rm -f typesafe-activator-1.3.12.zip
 
 ADD ./start.sh /start.sh
 ADD ./adduser.sh /adduser.sh

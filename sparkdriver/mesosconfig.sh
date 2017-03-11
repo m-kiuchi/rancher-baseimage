@@ -71,11 +71,8 @@ if [ "${MESOS_MASTER}" = "" ]; then
   echo "$0: No Mesos Config found. Exitting."
   exit 1
 else
-  echo "export MESOS_MASTER=${MESOS_MASTER}" >> ~/.bashrc
-  echo "export MARATHON_MASTER=${MARATHON_MASTER}" >> ~/.bashrc
-  echo 'alias spark-shell="sudo /opt/spark/bin/spark-shell --master '${MESOS_MASTER}'"' >> ~/.bashrc
-  echo 'alias spark-submit="sudo /opt/spark/bin/spark-submit --master '${MESOS_MASTER}' --supervise"' >> ~/.bashrc
   echo "${MESOS_MASTER}" > /tmp/MESOS_MASTER
+  echo "${MARATHON_MASTER}" > /tmp/MARATHON_MASTER
 fi
 export MARATHON_ZK=$zk/$(metadata self/stack/name)
 export MARATHON_HOSTNAME=$(metadata self/host/agent_ip)
