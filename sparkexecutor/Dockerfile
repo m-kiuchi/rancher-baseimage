@@ -16,7 +16,7 @@ MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
 ARG adduser=spark
 
 RUN yum -y update; yum clean all
-RUN yum -y install openssh-server passwd sudo iproute unzip
+RUN yum -y install openssh-server openssh-clients passwd sudo iproute unzip
 RUN rpm -Uvh http://repos.mesosphere.com/el-testing/7/noarch/RPMS/mesosphere-el-repo-7-3.noarch.rpm
 RUN yum -y install mesos-0.28.1 mesosphere-zookeeper
 RUN yum clean all

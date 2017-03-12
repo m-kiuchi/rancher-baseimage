@@ -8,6 +8,7 @@ fi
 SEEDHOST=$(cat /tmp/SEED_IP)
 SEEDIP=$(cat /tmp/SEED_IP)
 CASTYPE=$(cat /tmp/CAS_TYPE)
+CURRENT_IP=$(hostname -i)
 if [ "${CASTYPE}" = "node" ]; then
     echo "I am data node"
     while :; do
@@ -35,8 +36,10 @@ cat cassandra.yaml.org | sed -e 's/^listen_address: localhost/# listen_address: 
 cat /tmp/1 | sed -e 's/# listen_interface: eth0/listen_interface: eth0/' > /tmp/2
 cat /tmp/2 | sed -e "s/cluster_name: "\'"Test Cluster"\'"/cluster_name: "\'"${CLUSTERNAME}"\'"/" > /tmp/3
 cat /tmp/3 | sed -e "s/seeds: "\""127.0.0.1"\""/seeds: "\""${SEEDIP}"\""/" > /tmp/4
-sudo mv /tmp/4 /opt/cassandra/conf/cassandra.yaml
-cd /tmp; rm -f 1 2 3
+cat /tmp/4 | sed -e "s/rpc_address: localhost/rpc_address: 0.0.0.0/" > /tmp/5
+cat /tmp/5 | sed -e "s/# broadcast_rpc_address: 1.2.3.4/broadcast_rpc_address: ${CURRENT_IP}/" > /tmp/6
+sudo mv /tmp/6 /opt/cassandra/conf/cassandra.yaml
+cd /tmp; rm -f 1 2 3 4 6
 
 sudo mkdir -p /opt/cassandra/data
 sudo chmod 777 /opt/cassandra/data

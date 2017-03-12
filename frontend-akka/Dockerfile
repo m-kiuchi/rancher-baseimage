@@ -13,7 +13,7 @@ MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
 ARG adduser=root
 
 RUN yum -y update; yum clean all
-RUN yum -y install openssh-server passwd sudo iproute java-1.8.0-openjdk unzip; yum clean all
+RUN yum -y install openssh-server openssh-clients passwd sudo iproute java-1.8.0-openjdk unzip; yum clean all
 RUN yum clean all
 RUN systemctl disable sshd
 RUN systemctl disable default.target multi-user.target remote-fs.target runlevel2.target runlevel3.target runlevel4.target

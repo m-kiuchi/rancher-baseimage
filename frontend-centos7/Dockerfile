@@ -13,7 +13,7 @@ MAINTAINER Mitsutoshi Kiuchi <m-kiuchi@creationline.com>
 ARG adduser=root
 
 RUN yum -y update; yum clean all
-RUN yum -y install openssh-server passwd sudo iproute; yum clean all
+RUN yum -y install openssh-server openssh-clients passwd sudo iproute; yum clean all
 ADD ./start.sh /start.sh
 RUN mkdir /var/run/sshd
 
