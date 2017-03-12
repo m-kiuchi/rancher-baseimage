@@ -15,11 +15,9 @@ RUN yum -y update; yum clean all
 RUN yum -y install openssh-server passwd sudo iproute file bind-utils
 RUN yum -y install java-1.8.0-openjdk
 RUN yum clean all
-RUN curl -O http://ftp.riken.jp/net/apache/cassandra/3.9/apache-cassandra-3.9-bin.tar.gz
-RUN chmod 644 apache-cassandra-3.9-bin.tar.gz
+RUN cd /opt; curl -O http://ftp.riken.jp/net/apache/cassandra/3.9/apache-cassandra-3.9-bin.tar.gz; tar xzf apache-cassandra-3.9-bin.tar.gz; ln -s apache-cassandra-3.9 cassandra; rm -f apache-cassandra-3.9-bin.tar.gz
 
 # adduser for cassandra
-ARG adduser=cassandra
 ADD ./start.sh /start.sh
 ADD ./adduser.sh /adduser.sh
 ADD ./cassandra.sh /cassandra.sh

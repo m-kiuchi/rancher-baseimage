@@ -4,18 +4,12 @@ if [ "${CLUSTERNAME}" = "" ]; then
   export CLUSTERNAME="mkdefault"
 fi
 
-# download and extract cassndra binary
-cd
-if [ ! -e cassandra ]; then
-    tar xzf /apache-cassandra-3.9-bin.tar.gz
-    ln -s apache-cassandra-3.9 cassandra
-fi
-
 # if this is not seed node, wait for seed node is online
-SEEDHOST="seed"
-SEEDIP="127.0.0.1"
+SEEDHOST=$(cat /tmp/SEED_IP)
+SEEDIP=$(cat /tmp/SEED_IP)
 CASTYPE=$(cat /tmp/CAS_TYPE)
 if [ "${CASTYPE}" = "node" ]; then
+    echo "I am data node"
     while :; do
         ping -c 1 ${SEEDHOST}
         if [ "$?" = "0" ]; then
@@ -26,23 +20,28 @@ if [ "${CASTYPE}" = "node" ]; then
             sleep 3
         fi
     done
+else
+    echo "I am seed node"
 fi
-SEEDIP=`host seed|awk '{print $4}'`
+#SEEDIP=`host seed|awk '{print $4}'`
 
 # modify cassandra.yaml
-cd cassandra/conf
+cd /opt/cassandra/conf
 if [ -e cassandra.yaml.org ]; then
-    mv cassandra.yaml.org cassandra.yaml
+    sudo mv cassandra.yaml.org cassandra.yaml
 fi
-mv cassandra.yaml cassandra.yaml.org
-cat cassandra.yaml.org | sed -e 's/^listen_address: localhost/# listen_address: localhost/' > 1
-cat 1 | sed -e 's/# listen_interface: eth0/listen_interface: eth0/' > 2
-cat 2 | sed -e "s/cluster_name: "\'"Test Cluster"\'"/cluster_name: "\'"${CLUSTERNAME}"\'"/" > 3
-cat 3 | sed -e "s/seeds: "\""127.0.0.1"\""/seeds: "\""${SEEDIP}"\""/" > 4
-mv 4 cassandra.yaml
-rm -f 1 2 3
+sudo mv cassandra.yaml cassandra.yaml.org
+cat cassandra.yaml.org | sed -e 's/^listen_address: localhost/# listen_address: localhost/' > /tmp/1
+cat /tmp/1 | sed -e 's/# listen_interface: eth0/listen_interface: eth0/' > /tmp/2
+cat /tmp/2 | sed -e "s/cluster_name: "\'"Test Cluster"\'"/cluster_name: "\'"${CLUSTERNAME}"\'"/" > /tmp/3
+cat /tmp/3 | sed -e "s/seeds: "\""127.0.0.1"\""/seeds: "\""${SEEDIP}"\""/" > /tmp/4
+sudo mv /tmp/4 /opt/cassandra/conf/cassandra.yaml
+cd /tmp; rm -f 1 2 3
+
+sudo mkdir -p /opt/cassandra/data
+sudo chmod 777 /opt/cassandra/data
 
 # start cassndra
 cd
 export JVM_OPTS="-Dcassandra.consistent.rangemovement=false"
-cassandra/bin/cassandra
+/opt/cassandra/bin/cassandra
