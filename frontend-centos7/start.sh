@@ -1,27 +1,17 @@
 #!/bin/bash
-ADDUSER=$1
-if [ "${SSHUSER}" != "" ]; then
-  ADDUSER=${SSHUSER}
+echo "ADD user account"
+if [ "$1" != "" ]; then
+  ./adduser.sh $1
+else
+  ./adduser.sh
 fi
-if [ "${ADDUSER}" == "" ]; then
-  ADDUSER=root
-fi
-#echo $ADDUSER
+ADDUSER=$(cat /tmp/ADDUSER)
+SSH_USERPASS=$(cat /tmp/SSH_USERPASS)
+rm -f /tmp/SSH_USERPASS
 
-__create_user() {
-# Create a user to SSH into as.
-if [ "$ADDUSER" != "root" ]; then
-  useradd $ADDUSER
-  usermod -aG wheel $ADDUSER
-fi
-SSH_USERPASS=`date|sha1sum|awk '{print $1}'`
-echo -e "$SSH_USERPASS\n$SSH_USERPASS" | (passwd --stdin $ADDUSER)
+echo "start sshd"
 echo "--------------------"
 echo " SSH PASSWORD - please change immediately"
 echo " username: ${ADDUSER} , password: ${SSH_USERPASS}"
 echo "--------------------"
-}
-
-# Call all functions
-__create_user
 /usr/sbin/sshd -D
